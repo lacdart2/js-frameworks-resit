@@ -1,7 +1,6 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Gamepad2, Heart } from 'lucide-react';
+import { Home, Gamepad2, Heart, Search } from 'lucide-react';
 
-// fixed left sidebar with navigation
 export default function Sidebar() {
     return (
         <aside className="flex flex-col fixed top-0 left-0 w-64 h-screen bg-[#111827] border-r border-[#1E2540] p-5">
@@ -14,7 +13,7 @@ export default function Sidebar() {
             </div>
 
             <div className="flex items-center gap-2 w-full mb-6 px-3 py-2 bg-[#1A1F2E] rounded-lg border border-[#1E2540]">
-                <span className="text-[#64748B] text-sm">🔍</span>
+                <Search size={14} className="text-[#64748B]" />
                 <input
                     type="text"
                     placeholder="search games..."
@@ -22,7 +21,6 @@ export default function Sidebar() {
                 />
             </div>
 
-            {/* nav links */}
             <nav className="flex flex-col gap-1">
                 <p className="text-xs text-[#64748B] uppercase tracking-widest mb-2">navigation</p>
 
