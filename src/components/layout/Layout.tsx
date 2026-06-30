@@ -1,14 +1,20 @@
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
+import BottomNav from './BottomNav';
 
-// main layout wrapper — sidebar left, content right
 export default function Layout() {
     return (
-        <div className="flex min-h-screen bg-[#0D0F18] text-[#F1F5F9]">
+        <div className="flex min-h-screen" style={{ background: 'var(--bg-base)', color: 'var(--text-primary)' }}>
+
             <Sidebar />
-            <main className="flex flex-col flex-1 ml-64 min-h-screen p-6">
+
+            <main className="flex flex-col flex-1 h-screen overflow-y-auto
+        ml-0 md:ml-16 lg:ml-64
+        pb-20 md:pb-0">
                 <Outlet />
             </main>
+
+            <BottomNav />
         </div>
     );
 }

@@ -1,62 +1,109 @@
-import { NavLink } from 'react-router-dom';
-import { Home, Gamepad2, Heart, Search } from 'lucide-react';
+import { NavLink, Link, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { Home, Gamepad2, Heart, Search, X } from 'lucide-react';
 
 export default function Sidebar() {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const [searchParams] = useSearchParams();
+    const [searchValue, setSearchValue] = useState(searchParams.get('q') || '');
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    // keep local input in sync if the url param changes elsewhere (e.g. browser back button)
+    useEffect(() => {
+        setSearchValue(searchParams.get('q') || '');
+    }, [searchParams]);
+
+    function handleSearchChange(value: string) {
+        setSearchValue(value);
+        if (value) {
+            navigate(`/?q=${encodeURIComponent(value)}`);
+        } else if (location.pathname === '/') {
+            navigate('/');
+        }
+    }
+
+    function handleClearSearch() {
+        setSearchValue('');
+        navigate('/');
+        inputRef.current?.focus();
+    }
     return (
-        <aside className="flex flex-col fixed top-0 left-0 w-64 h-screen bg-[#111827] border-r border-[#1E2540] p-5">
+        <aside className="
+      hidden md:flex flex-col
+      fixed top-0 left-0  h-screen z-10
+      w-16 lg:w-64
+      border-r   border-[#1E2540]
+      p-3 lg:p-5
+      transition-all duration-300"
+            style={{ background: 'var(--bg-sidebar)' }}
+        >
+            <Link to="/" className="flex items-center justify-center  lg:justify-start gap-2.5 mb-8">
+                <div className="flex items-center justify-center w-10 h-10 rounded-lg flex-shrink-0"
+                    style={{ background: 'var(--accent)' }}
+                >
+                    <Gamepad2 size={20} style={{ color: 'var(--bg-base)' }} />
+                </div>
+                <div className="hidden lg:flex flex-col gap-px">
+                    <h1 className="text-lg font-bold leading-tight" style={{ color: 'var(--text-primary)', fontFamily: 'Space Grotesk, sans-serif', letterSpacing: '-0.01em' }}>
+                        OldROM
+                    </h1>
+                    <p className="text-[9px] font-semibold uppercase" style={{ color: 'var(--accent)', opacity: 0.7, letterSpacing: '0.08em' }}>
+                        retro game vault
+                    </p>
+                </div>
+            </Link>
 
-            <div className="mb-8">
-                <h1 className="text-xl font-bold text-[#FB7185]" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
-                    RetroVault
-                </h1>
-                <p className="text-xs mt-1 text-[#64748B]">classic games discovery</p>
-            </div>
-
-            <div className="flex items-center gap-2 w-full mb-6 px-3 py-2 bg-[#1A1F2E] rounded-lg border border-[#1E2540]">
-                <Search size={14} className="text-[#64748B]" />
+            {/* search, navigates to home with query param */}
+            <div className="hidden lg:flex items-center gap-2 w-full  mb-6 px-3 py-2 rounded-lg border"
+                style={{ background: 'var(--bg-card)', borderColor: 'var(--border)' }}
+            >
+                <Search size={14} style={{ color: 'var(--text-muted)' }} />
                 <input
+                    ref={inputRef}
                     type="text"
                     placeholder="search games..."
-                    className="flex-1 bg-transparent text-sm text-[#F1F5F9] placeholder-[#64748B] outline-none"
+                    value={searchValue}
+                    onChange={(e) => handleSearchChange(e.target.value)}
+                    className="flex-1 bg-transparent text-sm outline-none"
+                    style={{ color: 'var(--text-primary)' }}
                 />
+                {searchValue && (
+                    <button onClick={handleClearSearch} className="flex items-center justify-center cursor-pointer group/clear">
+                        <X size={14} className="text-[var(--text-muted)] transition-colors group-hover/clear:text-[var(--accent)]" />
+                    </button>
+                )}
             </div>
 
+            <p className="hidden lg:block text-xs uppercase  tracking-widest mb-2"
+                style={{ color: 'var(--text-muted)' }}
+            >
+                navigation
+            </p>
+
             <nav className="flex flex-col gap-1">
-                <p className="text-xs text-[#64748B] uppercase tracking-widest mb-2">navigation</p>
-
-                <NavLink
-                    to="/"
-                    end
-                    className={({ isActive }) =>
-                        `flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${isActive ? 'bg-[#FB7185]/10 text-[#FB7185]' : 'text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#1A1F2E]'
-                        }`
-                    }
-                >
-                    <Home size={16} />
-                    Home
-                </NavLink>
-
-                <NavLink
-                    to="/genres"
-                    className={({ isActive }) =>
-                        `flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${isActive ? 'bg-[#FB7185]/10 text-[#FB7185]' : 'text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#1A1F2E]'
-                        }`
-                    }
-                >
-                    <Gamepad2 size={16} />
-                    Genres
-                </NavLink>
-
-                <NavLink
-                    to="/favourites"
-                    className={({ isActive }) =>
-                        `flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${isActive ? 'bg-[#FB7185]/10 text-[#FB7185]' : 'text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#1A1F2E]'
-                        }`
-                    }
-                >
-                    <Heart size={16} />
-                    Favourites
-                </NavLink>
+                {[
+                    { to: '/', icon: <Home size={16} />, label: 'Home', end: true },
+                    { to: '/genres', icon: <Gamepad2 size={16} />, label: 'Genres', end: false },
+                    { to: '/favourites', icon: <Heart size={16} />, label: 'Favourites', end: false },
+                ].map(({ to, icon, label, end }) => (
+                    <NavLink
+                        key={to}
+                        to={to}
+                        end={end}
+                        className={({ isActive }) =>
+                            `flex items-center gap-3 px-3 py-2 rounded-lg  text-sm transition-colors
+              justify-center lg:justify-start
+              ${isActive
+                                ? 'bg-[#FB7185]/10 text-[#FB7185]'
+                                : 'text-[#94A3B8] hover:text-[#F1F5F9]  hover:bg-[#1A1F2E]'
+                            }`
+                        }
+                    >
+                        {icon}
+                        <span className="hidden lg:inline">{label}</span>
+                    </NavLink>
+                ))}
             </nav>
         </aside>
     );
