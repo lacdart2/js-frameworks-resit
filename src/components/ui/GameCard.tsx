@@ -32,24 +32,24 @@ export default function GameCard({ game, isFavourite, onToggleFavourite }: GameC
                 </Link>
 
                 {/* year + genres row */}
-                <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs px-2 py-0.5 rounded-full"
+                <div className="flex items-center gap-2 h-6">
+                    <span className="text-xs px-2 py-0.5 rounded-full whitespace-nowrap"
                         style={{ background: 'var(--bg-hover)', color: 'var(--text-muted)' }}
                     >
                         {game.released}
                     </span>
-                    {game.genre.slice(0, 2).map((g) => (
-                        <span key={g} className="text-xs px-2 py-0.5 rounded-full"
+                    {game.genre[0] && (
+                        <span className="text-xs px-2 py-0.5 rounded-full truncate"
                             style={{ background: 'var(--bg-hover)', color: 'var(--text-secondary)' }}
                         >
-                            {g}
+                            {game.genre[0]}
                         </span>
-                    ))}
+                    )}
                 </div>
 
                 <button
                     onClick={() => onToggleFavourite(game)}
-                    className="flex items-center gap-1.5 mt-1 w-fit text-xs transition-colors"
+                    className="flex items-center gap-1.5 mt-1 w-fit text-xs cursor-pointer transition-colors"
                     style={{ color: isFavourite ? 'var(--accent)' : 'var(--text-muted)' }}
                 >
                     <Heart
@@ -57,7 +57,7 @@ export default function GameCard({ game, isFavourite, onToggleFavourite }: GameC
                         fill={isFavourite ? 'var(--accent)' : 'none'}
                         stroke={isFavourite ? 'var(--accent)' : 'var(--text-muted)'}
                     />
-                    {isFavourite ? 'saved' : 'save'}
+                    {isFavourite ? 'favourited' : 'favourite'}
                 </button>
             </div>
         </div>
