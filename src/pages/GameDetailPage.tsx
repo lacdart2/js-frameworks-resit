@@ -22,7 +22,7 @@ export default function GameDetailPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const { isFavourite, toggleFavourite } = useFavourites();
+    const { isFavourite, toggleFavourite, addFavourite } = useFavourites();
     const { showToast } = useToast();
 
     useEffect(() => {
@@ -43,7 +43,8 @@ export default function GameDetailPage() {
         toggleFavourite(game);
         showToast(
             wasFavourite ? `removed "${game.name}" from favourites` : `added "${game.name}" to favourites`,
-            wasFavourite ? 'remove' : 'add'
+            wasFavourite ? 'remove' : 'add',
+            wasFavourite ? () => addFavourite(game) : undefined
         );
     }
 
@@ -164,9 +165,7 @@ export default function GameDetailPage() {
                         <div className="flex gap-3 overflow-x-auto pb-2">
                             {similarGames.map((g) => (
                                 <Link key={g.id} to={`/games/${g.id}`} className="flex-shrink-0 w-40">
-                                    <div className="rounded-xl overflow-hidden"
-                                        style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
-                                    >
+                                    <div className="glass-card rounded-xl overflow-hidden">
                                         <img src={g.image.url} alt={g.image.alt} className="w-full h-32 object-cover" />
                                         <div className="p-2.5">
                                             <p className="text-sm font-medium line-clamp-1" style={{ color: 'var(--text-primary)' }}>{g.name}</p>
