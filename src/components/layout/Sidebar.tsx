@@ -1,5 +1,5 @@
 import { NavLink, Link, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
-import { useState, useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { Home, Gamepad2, Heart, Search, X } from 'lucide-react';
 import { useFavourites } from '../../hooks/useFavourites';
 
@@ -8,15 +8,10 @@ export default function Sidebar() {
     const { favourites } = useFavourites();
     const location = useLocation();
     const [searchParams] = useSearchParams();
-    const [searchValue, setSearchValue] = useState(searchParams.get('q') || '');
+    const searchValue = searchParams.get('q') || '';
     const inputRef = useRef<HTMLInputElement>(null);
 
-    useEffect(() => {
-        setSearchValue(searchParams.get('q') || '');
-    }, [searchParams]);
-
     function handleSearchChange(value: string) {
-        setSearchValue(value);
         if (value) {
             navigate(`/?q=${encodeURIComponent(value)}`);
         } else if (location.pathname === '/') {
@@ -25,10 +20,10 @@ export default function Sidebar() {
     }
 
     function handleClearSearch() {
-        setSearchValue('');
         navigate('/');
         inputRef.current?.focus();
     }
+
     return (
         <aside className="
       hidden md:flex flex-col
@@ -66,7 +61,7 @@ export default function Sidebar() {
                     placeholder="search games..."
                     value={searchValue}
                     onChange={(e) => handleSearchChange(e.target.value)}
-                    className="flex-1 bg-transparent text-sm outline-none"
+                    className="flex-1 bg-transparent  text-sm outline-none"
                     style={{ color: 'var(--text-primary)' }}
                 />
                 {searchValue && (
@@ -120,7 +115,7 @@ export default function Sidebar() {
                     <Heart size={16} />
                     <span className="hidden lg:inline">Favourites</span>
                     {favourites.length > 0 && (
-                        <span className="hidden lg:flex items-center justify-center ml-auto w-5 h-5 rounded-full text-[10px] font-bold"
+                        <span className="hidden lg:flex items-center  justify-center ml-auto w-5 h-5 rounded-full text-[10px] font-bold"
                             style={{ background: 'var(--accent)', color: 'var(--bg-base)' }}
                         >
                             {favourites.length}

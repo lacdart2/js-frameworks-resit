@@ -3,12 +3,14 @@ import { getAllGames } from '../api/gamesApi';
 import { useFavourites } from '../hooks/useFavourites';
 import { useToast } from '../context/ToastContext';
 import GameCard from '../components/ui/GameCard';
+import GenreTag from '../components/ui/GenreTag';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import type { Game } from '../types/game';
-import { Tag, Swords, GraduationCap, Puzzle, Car, Wand2, Cpu, Crown } from 'lucide-react';
+import { Swords, GraduationCap, Puzzle, Car, Wand2, Cpu, Crown } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
-// maps known genre names to a fitting lucide icon, and falls back to Tag
-const GENRE_ICONS: Record<string, typeof Tag> = {
+// maps known genre names to a related lucide icon, and falls back to Tag
+const GENRE_ICONS: Record<string, LucideIcon> = {
     'Action': Swords,
     'Educational': GraduationCap,
     'Puzzle': Puzzle,
@@ -53,8 +55,7 @@ export default function GenresPage() {
 
     const genres = Object.keys(genreCounts).sort();
 
-    // derive the active genre directly during render — no effect needed,
-    // falls back to the first genre until the user picks one explicitly
+    // falls back to the first genre until the user clicks on another genre card
     const activeGenre = selectedGenre ?? genres[0] ?? null;
 
     const filteredGames = activeGenre
@@ -80,35 +81,17 @@ export default function GenresPage() {
             )}
 
             {!error && (
-                <div className="grid grid-cols-2 gap-3  sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                    {genres.map((genre) => {
-                        const active = activeGenre === genre;
-                        const Icon = GENRE_ICONS[genre] || Tag;
-                        return (
-                            <button
-                                key={genre}
-                                onClick={() => setSelectedGenre(genre)}
-                                className="glass-panel flex flex-col items-start gap-2.5 px-4 py-4 cursor-pointer  rounded-xl  text-left transition-colors"
-                                style={{
-                                    borderColor: active ? 'var(--accent)' : undefined,
-                                    background: active ? 'rgba(251,113,133,0.1)' : undefined,
-                                }}
-                            >
-                                <Icon size={18} style={{ color: active ? 'var(--accent)' : 'var(--text-muted)' }} />
-                                <span className="text-sm font-semibold" style={{ color: active ? 'var(--accent)' : 'var(--text-primary)' }}>
-                                    {genre}
-                                </span>
-                                <span className="text-xs px-2 py-0.5 rounded-full font-medium"
-                                    style={{
-                                        background: active ? 'var(--accent)' : 'var(--bg-hover)',
-                                        color: active ? 'var(--bg-base)' : 'var(--text-secondary)',
-                                    }}
-                                >
-                                    {genreCounts[genre]} {genreCounts[genre] === 1 ? 'game' : 'games'}
-                                </span>
-                            </button>
-                        );
-                    })}
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                    {genres.map((genre) => (
+                        <GenreTag
+                            key={genre}
+                            genre={genre}
+                            count={genreCounts[genre]}
+                            active={activeGenre === genre}
+                            icon={GENRE_ICONS[genre]}
+                            onClick={() => setSelectedGenre(genre)}
+                        />
+                    ))}
                 </div>
             )}
 

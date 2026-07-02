@@ -10,7 +10,7 @@ export default function BottomNav() {
             {[
                 { to: '/', icon: <Home size={20} />, label: 'home', end: true },
                 { to: '/genres', icon: <Gamepad2 size={20} />, label: 'genres', end: false },
-                { to: '/favourites', icon: <Heart size={20} />, label: 'saved', end: false },
+                { to: '/favourites', icon: <Heart size={20} />, label: 'favorites', end: false },
             ].map(({ to, icon, label, end }) => (
                 <NavLink
                     key={to}

@@ -3,7 +3,7 @@ import { Gamepad2, Home, LayoutGrid } from 'lucide-react';
 
 export default function NotFoundPage() {
     return (
-        <div className="flex flex-col items-center justify-center min-h-[70vh] px-6 text-center">
+        <div className="flex flex-col items-center justify-center min-h-[70vh]  px-6 text-center">
             <div className="flex items-center justify-center w-16 h-16 rounded-lg mb-6"
                 style={{ background: 'var(--accent)' }}
             >

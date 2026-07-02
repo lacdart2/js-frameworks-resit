@@ -5,6 +5,7 @@ import type { GamesResponse, SingleGameResponse, Game } from '../types/game';
 
 const BASE_URL = 'https://v2.api.noroff.dev';
 
+
 // fetch all games
 export async function getAllGames(): Promise<Game[]> {
     const response = await fetch(`${BASE_URL}/old-games`);

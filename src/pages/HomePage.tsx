@@ -1,13 +1,13 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { getAllGames } from '../api/gamesApi';
 import { useFavourites } from '../hooks/useFavourites';
 import { useToast } from '../context/ToastContext';
-import GameCard from '../components/ui/GameCard';
 import GameRow from '../components/ui/GameRow';
+import GameGrid from '../components/ui/GameGrid';
+import SortSelect from '../components/ui/SortSelect';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import type { Game } from '../types/game';
-import { SlidersHorizontal } from 'lucide-react';
 
 export default function HomePage() {
     const [games, setGames] = useState<Game[]>([]);
@@ -16,28 +16,9 @@ export default function HomePage() {
     const [searchParams] = useSearchParams();
     const search = searchParams.get('q') || '';
     const [sort, setSort] = useState<'name' | 'year'>('name');
-    const [animKey, setAnimKey] = useState(0);
-
-    // to force cards animation
-    useEffect(() => {
-        setAnimKey((k) => k + 1);
-    }, [sort]);
 
     const { isFavourite, toggleFavourite, addFavourite } = useFavourites();
     const { showToast } = useToast();
-    const [sortOpen, setSortOpen] = useState(false);
-    const sortRef = useRef<HTMLDivElement>(null);
-
-    // close sort dropdown when clicking outside of it
-    useEffect(() => {
-        function handleClickOutside(e: MouseEvent) {
-            if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
-                setSortOpen(false);
-            }
-        }
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
 
     useEffect(() => {
         getAllGames()
@@ -52,7 +33,12 @@ export default function HomePage() {
         showToast(
             wasFavourite ? `removed "${game.name}" from favourites` : `added "${game.name}" to favourites`,
             wasFavourite ? 'remove' : 'add',
-            wasFavourite ? () => addFavourite(game) : undefined
+            wasFavourite
+                ? () => {
+                    addFavourite(game);
+                    showToast(`added "${game.name}" back to favourites`, 'add');
+                }
+                : undefined
         );
     }
 
@@ -114,7 +100,7 @@ export default function HomePage() {
                 </>
             )}
             {/* all games */}
-            <section className="flex flex-col gap-4 px-6 pb-10">
+            <section className="flex flex-col gap-4 px-6  pb-10">
                 <div className="flex items-center justify-between">
                     <h2 className="text-base font-semibold" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
                         {search ? (
@@ -123,56 +109,18 @@ export default function HomePage() {
                             'All Games'
                         )}
                     </h2>
-
-                    <div ref={sortRef} className="relative">
-                        <button
-                            onClick={() => setSortOpen((prev) => !prev)}
-                            className="glass-panel flex items-center gap-2 px-3 py-2 rounded-lg text-sm"
-                            style={{ color: 'var(--text-primary)', cursor: 'pointer' }}
-                        >
-                            <SlidersHorizontal size={14} style={{ color: 'var(--text-muted)' }} />
-                            sort by {sort}
-                        </button>
-
-                        {sortOpen && (
-                            <div className="glass-panel absolute right-0 top-full mt-2 w-40 rounded-lg overflow-hidden z-20">
-                                {(['name', 'year'] as const).map((option) => (
-                                    <button
-                                        key={option}
-                                        onClick={() => { setSort(option); setSortOpen(false); }}
-                                        className="sort-option flex items-center w-full px-3 py-2.5 text-sm text-left"
-                                        style={{ color: sort === option ? 'var(--accent)' : 'var(--text-primary)' }}
-                                    >
-                                        sort by {option}
-                                    </button>
-                                ))}
-                            </div>
-                        )}
-                    </div>
+                    <SortSelect sort={sort} onChange={setSort} />
                 </div>
 
-                {error && (
-                    <p className="text-sm" style={{ color: 'var(--accent)' }}>{error}</p>
-                )}
-
-                {!loading && !error && sorted.length === 0 && (
-                    <p className="text-sm" style={{ color: 'var(--text-muted)' }}>no games found</p>
-                )}
-
-                {!loading && !error && (
-                    <div key={animKey} className="grid grid-cols-2 gap-4  sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                        {sorted.map((game, index) => (
-                            <div key={game.id} className="card-stagger" style={{ animationDelay: `${Math.min(index * 80, 1200)}ms` }}>
-                                <GameCard
-                                    game={game}
-                                    isFavourite={isFavourite(game.id)}
-                                    onToggleFavourite={handleToggleFavourite}
-                                />
-                            </div>
-                        ))}
-                    </div>
-                )}
+                <GameGrid
+                    games={sorted}
+                    isFavourite={isFavourite}
+                    onToggleFavourite={handleToggleFavourite}
+                    animKey={sort}
+                    loading={loading}
+                    error={error}
+                />
             </section>
-        </div >
+        </div>
     );
 }
