@@ -46,9 +46,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                         key={toast.id}
                         className="flex items-center justify-between gap-4 pl-4 pr-3 py-3 rounded-lg text-sm font-medium animate-in"
                         style={{
-                            background: 'rgba(251,113,133,0.1)',
+                            background: 'rgba(13,15,24,0.92)',
                             border: '1px solid rgba(251,113,133,0.4)',
                             color: 'var(--accent)',
+                            boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
                         }}
                     >
                         <span>{toast.message}</span>
