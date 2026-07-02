@@ -1,80 +1,71 @@
-<<<<<<< HEAD
-# React + TypeScript + Vite
+# OldROM — Retro Game Discovery Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A responsive game discovery app built with React and TypeScript for the Noroff JavaScript Frameworks Resit 1 assignment. Browse, search, sort, and favourite classic retro games using the Noroff Old Games API.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Browse all games in a responsive grid layout
+- View detailed information for each game (description, release year, genres)
+- Explore games by genre on a dedicated genres page
+- Search games by name (synced to the URL via `?q=` query param)
+- Sort games by name or release year
+- Mark games as favourites, persisted in `localStorage` via a custom `useFavourites` hook
+- Toast notifications when adding or removing favourites, with undo support
+- Fully responsive: full sidebar on desktop, icon-only sidebar on tablet, bottom navigation on mobile
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- [React](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/) (strict mode)
+- [Vite](https://vite.dev/)
+- [Tailwind CSS v4](https://tailwindcss.com/)
+- [React Router DOM](https://reactrouter.com/)
+- [Lucide React](https://lucide.dev/) for icons
 
-## Expanding the ESLint configuration
+## API
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+This project uses the [Noroff Old Games API](https://docs.noroff.dev/docs/v2/basic/old-games) (no authentication required):
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- `GET /old-games` — fetch all games
+- `GET /old-games/:id` — fetch a single game by id
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Base URL: `https://v2.api.noroff.dev`
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Getting Started
 
+Clone the repository and install dependencies:
+
+```bash
+git clone https://github.com/lacdart2/js-frameworks-resit.git
+cd js-frameworks-resit
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Run the development server:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm run dev
 ```
-=======
-# js-frameworks-resit
-Game discovery platform built with React and TypeScript. Noroff JSF Course Assignment Resit 
->>>>>>> 186be2b78a983df455850aea7cddf6e874752712
+
+Build for production:
+
+```bash
+npm run build
+```
+
+## Project Structure
+
+src/
+├── api/ — API call functions (getAllGames, getGameById)
+├── components/
+│ ├── layout/ — Sidebar, BottomNav, main Layout wrapper
+│ └── ui/ — reusable UI components (GameCard, GameGrid, SortSelect, GenreTag, etc.)
+├── context/ — ToastContext for toast notifications
+├── hooks/ — useFavourites custom hook (localStorage persistence)
+├── pages/ — route-level pages (Home, GameDetail, Genres, Favourites, NotFound)
+└── types/ — shared TypeScript interfaces
+
+## Author
+
+**Lakhdar Hafsi**
+GitHub: [@lacdart2](https://github.com/lacdart2)
+Noroff Frontend Development — JavaScript Frameworks, Resit 1
