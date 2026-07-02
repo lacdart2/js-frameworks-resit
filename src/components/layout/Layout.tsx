@@ -9,8 +9,8 @@ export default function Layout() {
             <Sidebar />
 
             <main className="flex flex-col flex-1 h-screen overflow-y-auto
-        ml-0 md:ml-16 lg:ml-64
-        pb-20 md:pb-0">
+               ml-0 md:ml-16 lg:ml-64
+               pb-20 md:pb-0">
                 <Outlet />
             </main>
 
