@@ -1,15 +1,16 @@
 import { NavLink, Link, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import { Home, Gamepad2, Heart, Search, X } from 'lucide-react';
+import { useFavourites } from '../../hooks/useFavourites';
 
 export default function Sidebar() {
     const navigate = useNavigate();
+    const { favourites } = useFavourites();
     const location = useLocation();
     const [searchParams] = useSearchParams();
     const [searchValue, setSearchValue] = useState(searchParams.get('q') || '');
     const inputRef = useRef<HTMLInputElement>(null);
 
-    // keep local input in sync if the url param changes elsewhere (e.g. browser back button)
     useEffect(() => {
         setSearchValue(searchParams.get('q') || '');
     }, [searchParams]);
@@ -85,18 +86,17 @@ export default function Sidebar() {
                 {[
                     { to: '/', icon: <Home size={16} />, label: 'Home', end: true },
                     { to: '/genres', icon: <Gamepad2 size={16} />, label: 'Genres', end: false },
-                    { to: '/favourites', icon: <Heart size={16} />, label: 'Favourites', end: false },
                 ].map(({ to, icon, label, end }) => (
                     <NavLink
                         key={to}
                         to={to}
                         end={end}
                         className={({ isActive }) =>
-                            `flex items-center gap-3 px-3 py-2 rounded-lg  text-sm transition-colors
-              justify-center lg:justify-start
-              ${isActive
+                            `flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors
+                            justify-center lg:justify-start
+                            ${isActive
                                 ? 'bg-[#FB7185]/10 text-[#FB7185]'
-                                : 'text-[#94A3B8] hover:text-[#F1F5F9]  hover:bg-[#1A1F2E]'
+                                : 'text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#1A1F2E]'
                             }`
                         }
                     >
@@ -104,6 +104,29 @@ export default function Sidebar() {
                         <span className="hidden lg:inline">{label}</span>
                     </NavLink>
                 ))}
+
+                <NavLink
+                    to="/favourites"
+                    end={false}
+                    className={({ isActive }) =>
+                        `flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors
+                        justify-center lg:justify-start
+                        ${isActive
+                            ? 'bg-[#FB7185]/10 text-[#FB7185]'
+                            : 'text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#1A1F2E]'
+                        }`
+                    }
+                >
+                    <Heart size={16} />
+                    <span className="hidden lg:inline">Favourites</span>
+                    {favourites.length > 0 && (
+                        <span className="hidden lg:flex items-center justify-center ml-auto w-5 h-5 rounded-full text-[10px] font-bold"
+                            style={{ background: 'var(--accent)', color: 'var(--bg-base)' }}
+                        >
+                            {favourites.length}
+                        </span>
+                    )}
+                </NavLink>
             </nav>
         </aside>
     );
