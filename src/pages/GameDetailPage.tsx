@@ -27,14 +27,27 @@ export default function GameDetailPage() {
 
     useEffect(() => {
         if (!id) return;
+        let ignore = false;
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- resetting loading state before a param-driven fetch is the correct pattern here
         setLoading(true);
+
         Promise.all([getGameById(Number(id)), getAllGames()])
             .then(([gameData, gamesData]) => {
-                setGame(gameData);
-                setAllGames(gamesData);
+                if (!ignore) {
+                    setGame(gameData);
+                    setAllGames(gamesData);
+                }
             })
-            .catch(() => setError('game not found'))
-            .finally(() => setLoading(false));
+            .catch(() => {
+                if (!ignore) setError('game not found');
+            })
+            .finally(() => {
+                if (!ignore) setLoading(false);
+            });
+
+        return () => {
+            ignore = true;
+        };
     }, [id]);
 
     function handleToggleFavourite() {
@@ -154,7 +167,7 @@ export default function GameDetailPage() {
                     }}
                 >
                     <Heart size={18} fill={favourited ? 'var(--bg-base)' : 'none'} />
-                    {favourited ? 'saved to favourites' : 'add to favourites'}
+                    {favourited ? 'favourited' : 'add to favourites'}
                 </button>
 
                 {similarGames.length > 0 && (

@@ -54,15 +54,19 @@ npm run build
 
 ## Project Structure
 
+<pre>
+```
 src/
-├── api/ — API call functions (getAllGames, getGameById)
+├── api/           — API call functions (getAllGames, getGameById)
 ├── components/
-│ ├── layout/ — Sidebar, BottomNav, main Layout wrapper
-│ └── ui/ — reusable UI components (GameCard, GameGrid, SortSelect, GenreTag, etc.)
-├── context/ — ToastContext for toast notifications
-├── hooks/ — useFavourites custom hook (localStorage persistence)
-├── pages/ — route-level pages (Home, GameDetail, Genres, Favourites, NotFound)
-└── types/ — shared TypeScript interfaces
+│   ├── layout/    — Sidebar, BottomNav, main Layout wrapper
+│   └── ui/        — reusable UI components (GameCard, GameGrid, SortSelect, GenreTag, etc.)
+├── context/       — ToastContext for toast notifications
+├── hooks/         — useFavourites custom hook (localStorage persistence)
+├── pages/         — route-level pages (Home, GameDetail, Genres, Favourites, NotFound)
+└── types/         — shared TypeScript interfaces
+```
+</pre>
 
 ## Author
 
